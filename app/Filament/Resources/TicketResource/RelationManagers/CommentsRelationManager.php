@@ -37,11 +37,12 @@ class CommentsRelationManager extends RelationManager
                         ->required()
                         ->maxLength(255),
                     Forms\Components\FileUpload::make('attachments')
-                        ->directory('comment-attachments/' . date('m-y'))
+                        ->directory('comment-attachments/'.date('m-y'))
                         ->maxSize(2000)
                         ->enableDownload(),
-                ])
-            ]);
+                ]),
+            ])
+        ;
     }
 
     public static function table(Table $table): Table
@@ -71,37 +72,40 @@ class CommentsRelationManager extends RelationManager
 
                     return $data;
                 })
-                    ->label('Tambah Komentar')
+                    ->label('Comment')
                     ->after(function (Livewire $livewire) {
                         $ticket = $livewire->ownerRecord;
 
-                        if (auth()->user()->hasAnyRole(['Admin Unit', 'Staf Unit'])) {
+                        if (auth()->user()->hasAnyRole(['Admin Unit', 'Staff Unit'])) {
                             $receiver = $ticket->owner;
                         } else {
                             $receiver = User::whereHas(
                                 'roles',
                                 function ($q) {
                                     $q->where('name', 'Admin Unit')
-                                        ->orWhere('name', 'Staf Unit');
+                                        ->orWhere('name', 'Staff Unit')
+                                    ;
                                 },
                             )->get();
                         }
 
                         Notification::make()
-                            ->title('Terdapat komentar baru pada tiket Anda')
+                            ->title('There are new comments on your ticket!!')
                             ->actions([
-                                Action::make('Lihat')
+                                Action::make('Look')
                                     ->url(TicketResource::getUrl('view', ['record' => $ticket->id])),
                             ])
-                            ->sendToDatabase($receiver);
+                            ->sendToDatabase($receiver)
+                        ;
                     }),
             ])
             ->actions([
                 Tables\Actions\Action::make('attachment')->action(function ($record) {
-                    return response()->download('storage/' . $record->attachments);
+                    return response()->download('storage/'.$record->attachments);
                 })->hidden(fn ($record) => $record->attachments == ''),
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([]);
+            ->bulkActions([])
+        ;
     }
 }

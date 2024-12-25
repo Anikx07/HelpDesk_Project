@@ -12,22 +12,23 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('problem_categories', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('unit_id')->index('unit_id');
-            $table->string('name');
+            $table->unsignedBigInteger('tiket_id')->index('tiket_id');
+            $table->unsignedBigInteger('user_id')->index('user_id');
+            $table->text('comment');
             $table->timestamps();
             $table->softDeletes();
         });
     }
 
     /**
-     * Reverse  the  migrations.
+     * Reverse the migrations.
      *
      * @return void
      */
     public function down()
     {
-        Schema::dropIfExists('problem_categories');
+        Schema::dropIfExists('comments');
     }
 };

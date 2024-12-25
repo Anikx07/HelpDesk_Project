@@ -12,19 +12,21 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('priorities', function (Blueprint $table) {
+        Schema::create('units', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     /**
-     * Reverse  the  migrations.
+     * Reverse the migrations.
      *
      * @return void
      */
     public function down()
     {
-        Schema::dropIfExists('priorities');
+        Schema::dropIfExists('units');
     }
 };
